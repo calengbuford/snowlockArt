@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- Sweet alert -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    <link rel="shortcut icon" type="image/png" href="images/snowlock_face_circle.png">
+    <title>SnowLock Art</title>
+</head>
+
+<body>
+    <div id="art-admin">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark centered layout-dark-bg">
+            <div class="flex-container col-flex">
+                <a class="navbar-brand center-text" style="padding: 0px; margin: 0px;" href="#">
+                    <span style="font-size: 40px;">S</span><span style="font-size: 30px;">NOWLOCK</span>
+                    &nbsp;<span style="font-size: 40px;">A</span><span style="font-size: 30px;">RT</span>
+                </a>
+                <ul class="navbar-nav">
+                  <li class="center-text">
+                    <a class="nav-link" href="/">Home</a>
+                  </li>
+                  <li class="center-text">
+                    <a class="nav-link" href="portfolio.html">Portfolio</a>
+                  </li>
+                  <li class="center-text">
+                    <a class="nav-link" href="commission.html">Commission</a>
+                  </li>
+                  <li class="center-text">
+                    <a class="nav-link" href="about.html">About the Artist</a>
+                  </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="page-content">
+            <div class="center-text">
+                <div class="art-piece-input low-contrast-bright-bg">
+                    
+                    <!-- IF LOGGED IN -->
+                    <div v-if="authenticated">
+                        
+                        <!-- Post a new art piece -->
+                        <div class="login-page-block">
+                            <h3>
+                                <span class="drop-down-arrow" @click="showNewPostInfo()">
+                                    <span v-if="newPostShown">&#9660;</span><span v-else>&#9654;</span>
+                                </span>
+                                <span>Post new art piece</span>
+                            </h3>
+                            <div v-if="newPostShown">
+                                
+                                <div class="centered flex-container">
+                                    <!-- Get art piece information -->
+                                    <div>
+                                        <table align="center">
+                                            <tr>
+                                                <td>Name</td>
+                                                <td><input v-model="name"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Date</td>
+                                                <td><input v-model="date"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Price</td>
+                                                <td><input v-model="price"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Description&nbsp;&nbsp;</td>
+                                                <td><textarea v-model="descript" rows="3" cols="19" style="border: 1px solid lightgrey"></textarea></td>
+                                            </tr>
+                                            <tr>
+                                            <td>Order</td>
+                                            <td><input type="number" v-model="order"></td>
+                                        </tr>
+                                        </table>
+                                    </div>
+                                    
+                                    <!-- Display image to be posted -->
+                                    <div v-if="loadingFile" style="margin: 80px 0 0 30px">
+                                        Loading...
+                                    </div>
+                                    <div v-if="postFileSelected">
+                                        <img :src="newUpload.path" class="img-upload">
+                                    </div>
+                                </div>
+                                
+                                <!-- Select file and upload art piece -->
+                                <span>
+                                    <label class="custom-file-upload btn btn-md primary0-bg">
+                                    Upload art piece
+                                    <input type="file" name="photo" @change="fileChanged">
+                                    </label>
+                                    <button class="btn btn-md" :disabled="disablePost" v-bind:class="{ 'primary0-bg': !disablePost, 'reduced-color-bright-bg': disablePost }" @click="upload">Post art piece</button>
+                                </span>
+                                
+                            </div>
+                        </div>
+                        
+                        <!-- Edit an art piece -->
+                        <div class="login-page-block">
+                            <h3>
+                                <span class="drop-down-arrow" @click="showEditPostInfo()">
+                                    <span v-if="editPostShown">&#9660;</span><span v-else>&#9654;</span>
+                                </span>
+                                <span>Edit an art piece</span>
+                            </h3>
+                            <div v-if="editPostShown">
+                                
+                                <div class="centered flex-container">
+                                    <!-- Get art piece id -->
+                                    <div>
+                                        <table align="center">
+                                            <tr>
+                                                <td>Art piece id&nbsp;&nbsp;</td>
+                                                <td><input v-model="editId"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- Select file and upload art piece -->
+                                <span>
+                                    <button class="btn btn-md" style="margin: 15px 0 0 0" :disabled="disableEdit" v-bind:class="{ 'primary0-bg': !disableEdit, 'reduced-color-bright-bg': disableEdit }" @click="findArtId">Edit art piece</button>
+                                    <button class="btn btn-md" style="margin: 15px 0 0 0" :disabled="!editFileSelected" v-bind:class="{ 'primary0-bg': editFileSelected, 'reduced-color-bright-bg': !editFileSelected }" @click="updateArt">Post changes</button>
+                                    <!-- Delete button -->
+                                    <button v-if="editArt" class="btn btn-md" style="margin: 15px 0 0 0; background-color: var(--error-color)" @click="confirmDeleteArt">Delete art piece</button>
+    
+                                </span>
+                                
+                                <!-- Set art piece information -->
+                                <div v-if="editArt" style="margin: 15px 0 0 0">
+                                    <table align="center">
+                                        <tr>
+                                            <td>Name</td>
+                                            <td><input v-model="newName"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td><input v-model="newDate"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Price</td>
+                                            <td><input v-model="newPrice"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Description&nbsp;&nbsp;</td>
+                                            <td><textarea v-model="newDescript" rows="3" cols="19" style="border: 1px solid lightgrey"></textarea></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Order</td>
+                                            <td><input type="number" v-model="newOrder"></td>
+                                        </tr>
+                                    </table>
+                                    
+                                    <!-- Display image to be posted -->
+                                    <div v-if="editFileSelected">
+                                        <img :src="editArt.path" class="img-upload" style="padding: 0;" alt="img_for_edit">
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+
+                        <!-- List all art pieces listed in portfolio -->
+                        <div class="login-page-block">
+                            <h3>
+                                <span class="drop-down-arrow" @click="showPortfolioInfo()">
+                                    <span v-if="portfolioShown">&#9660;</span><span v-else>&#9654;</span>
+                                </span>
+                                <span>Art pieces listed ({{artPieces.length}})</span>
+                            </h3>
+                            <div v-if="portfolioShown">
+                                
+                                <div>
+                                    <table align="center">
+                                        <tr v-for="art in artPieces" class="art-object">
+                                            <td><img :src="art.path" class="img-listed"></td>
+                                            <td class="art-property">{{art.order}}</td>
+                                            <td class="art-property">{{art.name}}</td>
+                                            <td class="art-property">{{art.price}}</td>
+                                            <td class="art-property">{{art.date}}</td>
+                                            <td>Id:</td>
+                                            <td class="art-property">{{art._id}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- Edit a commission -->
+                        <div class="login-page-block">
+                            <h3>
+                                <span class="drop-down-arrow" @click="showEditCommissionInfo()">
+                                    <span v-if="editCommissionShown">&#9660;</span><span v-else>&#9654;</span>
+                                </span>
+                                <span>Edit a commission</span>
+                            </h3>
+                            <div v-if="editCommissionShown">
+                                
+                                <div class="centered flex-container">
+                                    <!-- Get art piece id -->
+                                    <div>
+                                        <table align="center">
+                                            <tr>
+                                                <td>Commission id&nbsp;&nbsp;</td>
+                                                <td><input v-model="editCommissionId"></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                                <!-- Select file and upload art piece -->
+                                <span>
+                                    <button class="btn btn-md" style="margin: 15px 0 0 0" :disabled="disableCommissionStart" v-bind:class="{ 'primary0-bg': !disableCommissionStart, 'reduced-color-bright-bg': disableCommissionStart }" @click="findCommissionId">Edit commission</button>
+                                    <button class="btn btn-md" style="margin: 15px 0 0 0" :disabled="!editCommissionSelected" v-bind:class="{ 'primary0-bg': editCommissionSelected, 'reduced-color-bright-bg': !editCommissionSelected }" @click="markCommissionStarted">Mark as started</button>
+                                    <!-- Delete button -->
+                                    <button v-if="editCommission" class="btn btn-md" style="margin: 15px 0 0 0; background-color: var(--error-color)" @click="confirmDeleteCommission">Delete commission</button>
+                                </span>
+                                
+                                <!-- Set art piece information -->
+                                <div v-if="editCommission" style="margin: 15px 0 0 0">
+                                    <div>
+                                        <table align="center">
+                                            <tr class="art-object">
+                                                <td class="art-property">{{curCommissionName}}</td>
+                                                <td class="art-property">{{curCommissionEmail}}</td>
+                                                <td>$</td>
+                                                <td class="art-property">{{curCommissionPriceRange}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- List all commissions listed in the database -->
+                        <div class="login-page-block">
+                            <h3>
+                                <span class="drop-down-arrow" @click="showCommissionInfo()">
+                                    <span v-if="commissionShown">&#9660;</span><span v-else>&#9654;</span>
+                                </span>
+                                <span>Commissions Received ({{commissions.length}})</span>
+                            </h3>
+                            <div v-if="commissionShown">
+                                
+                                <div>
+                                    <table align="center">
+                                        <tr v-for="comm in commissions" class="art-object" v-bind:class="{ 'success-color-bg': comm.started }">
+                                            <td class="commission-property">{{comm.name}}</td>
+                                            <td class="commission-property">{{comm.email}}</td>
+                                            <td>$</td>
+                                            <td class="commission-property">{{comm.priceRange}}</td>
+                                            <td class="commission-property">{{comm.descript}}</td>
+                                            <td class="commission-property">{{comm.dateReceived}}</td>
+                                            <td>Id:</td>
+                                            <td class="commission-property">{{comm._id}}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        
+                        
+                        <!-- Website colors -->
+                        <div class="login-page-block">
+                            <h3>
+                                <span class="drop-down-arrow" @click="showSiteDesignInfo()">
+                                    <span v-if="siteDesignShown">&#9660;</span><span v-else>&#9654;</span>
+                                </span>
+                                <span>Main website colors</span>
+                            </h3>
+                            <div v-if="siteDesignShown">
+                                
+                                <div class="centered">
+                                <div style="padding: 20px;" class="centered flex-container layout-bright-bg">
+                                    <div class="color-swatch primary0-bg"></div>
+                                    <div class="color-swatch low-contrast-bright-bg"></div>
+                                    <div class="color-swatch layout-dark-bg"></div>
+                                    <div class="color-swatch low-contrast-dark-bg"></div>
+                        
+                                    <div class="color-swatch"></div>
+                                    <div class="color-swatch error-color-bg"></div>
+                                    <div class="color-swatch success-color-bg"></div>
+                                    <div class="color-swatch reduced-color-bright-bg"></div>
+                                    
+                                    <div class="color-swatch"></div>
+                                    <div class="color-swatch primary2-bg"></div>
+                                    <div class="color-swatch primary1-bg"></div>
+                                    <div class="color-swatch primary0-bg"></div>
+                                    <div class="color-swatch primary-1-bg"></div>
+                                    <div class="color-swatch primary-2-bg"></div>
+                                </div>
+                                
+                                <div style="padding: 20px;" class="centered flex-container layout-dark-bg">
+                                    <div class="color-swatch primary0-bg"></div>
+                                    <div class="color-swatch low-contrast-dark-bg"></div>
+                                    <div class="color-swatch layout-bright-bg"></div>
+                                    <div class="color-swatch low-contrast-bright-bg"></div>
+                                    
+                                    <div class="color-swatch"></div>
+                                    <div class="color-swatch error-color-bg"></div>
+                                    <div class="color-swatch success-color-bg"></div>
+                                    <div class="color-swatch reduced-color-dark-bg"></div>
+                                    
+                                    <div class="color-swatch"></div>
+                                    <div class="color-swatch primary2-bg"></div>
+                                    <div class="color-swatch primary1-bg"></div>
+                                    <div class="color-swatch primary0-bg"></div>
+                                    <div class="color-swatch primary-1-bg"></div>
+                                    <div class="color-swatch primary-2-bg"></div>
+                                </div>
+                            </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                     <!--IF NOT LOGGED IN -->
+                    <div v-if="!authenticated">
+                        <h3>Log in</h3>
+                        <div class="centered">
+                            <table align="center">
+                                <tr>
+                                    <td>Username</td>
+                                    <td><input v-model="username"></td>
+                                </tr>
+                                <tr>
+                                    <td>Password&nbsp;</td>
+                                    <td><input type="password" v-model="password"></td>
+                                </tr>
+                            </table>
+                                
+                            <div class="centered">
+                                <input type="submit" class="btn btn-md btn-login" value="Login" @click="login">
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <footer id="sticky-footer" class="footer py-4 bg-dark text-white-50 layout-dark-bg">
+            <div class="container text-center">
+                <small>Copyright &copy; 2017 SnowLock Art<a href="https://www.instagram.com/snowlock_art/"
+                        target="_blank" class="fa fa-instagram"></a>
+                </small>
+            </div>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" integrity="sha256-mpnrJ5DpEZZkwkE1ZgkEQQJW/46CSEh/STrZKOB/qoM=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.7/vue.js" integrity="sha256-g+Q8DFAmG5+eyRPSydX0LY4TfjsL11XSDrIGerbbEdA=" crossorigin="anonymous"></script>
+    <script src="javascripts/admin.js"></script>
+
+</body>
+
+</html>

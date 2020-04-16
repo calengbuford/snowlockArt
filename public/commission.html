@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <!-- Sweet alert -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
+
+    <!-- SMTP email -->
+    <script src="https://smtpjs.com/v3/smtp.js"></script>  
+
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    <link rel="shortcut icon" type="image/png" href="images/snowlock_face_circle.png">
+    <title>SnowLock Art</title>
+</head>
+
+<body>
+    <div id="art-commission">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark centered layout-dark-bg">
+            <div class="flex-container col-flex">
+                <a class="navbar-brand center-text" style="padding: 0px; margin: 0px;" href="#">
+                    <span style="font-size: 40px;">S</span><span style="font-size: 30px;">NOWLOCK</span>
+                    &nbsp;<span style="font-size: 40px;">A</span><span style="font-size: 30px;">RT</span>
+                </a>
+                <ul class="navbar-nav">
+                  <li class="center-text">
+                    <!--<a class="nav-link" href="index.html">Home</a>-->
+                    <a class="nav-link" href="/">Home</a>
+                  </li>
+                  <li class="center-text">
+                    <a class="nav-link" href="portfolio.html">Portfolio</a>
+                  </li>
+                  <li class="center-text">
+                    <a class="nav-link active" href="#">Commission</a>
+                  </li>
+                  <li class="center-text">
+                    <a class="nav-link" href="about.html">About the Artist</a>
+                  </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="page-content">
+            <div class="center-text">
+
+                    <div id="app">
+                        <div class="center-text">
+                            <br>
+                            <h1 style="color: var(--primary-2)">Commission the Artist</h1>
+                            <h2>Calen Gage Buford</h2>
+                            <img src="images/snowlock_face.jpg" style="height:150px;" alt="SnowLock Art logo">
+            
+                            <div class="page-content-commission" style="text-align: left">
+                                Calen regularly fulfills commissioned art pieces upon request. These have included birthday 
+                                gifts, wedding proposal scences, anniversaries, logo designs, business wall art, and more.
+                                If you have an art concept you want to make a reality, put your information in below!
+                            </div>
+                            <br><br>
+                            
+                            <!-- Get commission information -->
+                            <div>
+                                <table align="center">
+                                    <tr>
+                                        <td>First and last name</td>
+                                        <td style="width: 60%"><input class="fit-cell" v-model="name"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td><input class="fit-cell" v-model="email"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Price range</td>
+                                        <td><input class="fit-cell" v-model="priceRange"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Description of commission &nbsp;&nbsp;</td>
+                                        <!--<td><textarea v-model="descript" rows="3" cols="44" style="border: 1px solid lightgrey"></textarea></td>-->
+                                        <td><textarea v-model="descript" rows="3" class="fit-cell descriptCommission"></textarea></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <br>
+                            <button class="btn btn-lg" :disabled="disableRequest" v-bind:class="{ 'primary0-bg': !disableRequest, 'reduced-color-bright-bg': disableRequest }" @click="requestCommission()">Request Commission</button>
+                        </div>
+                    </div>
+
+            </div>
+        </div>
+
+        <footer id="sticky-footer" class="footer py-4 bg-dark text-white-50 layout-dark-bg">
+            <div class="container text-center">
+                <small>Copyright &copy; 2017 SnowLock Art<a href="https://www.instagram.com/snowlock_art/"
+                        target="_blank" class="fa fa-instagram"></a>
+                </small>
+            </div>
+        </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js" integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" integrity="sha256-mpnrJ5DpEZZkwkE1ZgkEQQJW/46CSEh/STrZKOB/qoM=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.7/vue.js" integrity="sha256-g+Q8DFAmG5+eyRPSydX0LY4TfjsL11XSDrIGerbbEdA=" crossorigin="anonymous"></script>
+    <script src="javascripts/commission.js"></script>
+
+</body>
+
+</html>
